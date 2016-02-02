@@ -45,7 +45,7 @@ public class TwilightTalon extends CANTalon{
 	}
 	
 	public boolean isOverMaxTemp() {
-		double CurrTemp = this.getTemp(); //Returns Celsius
+		double CurrTemp = this.getTemperature(); //Returns Celsius
 		return CurrTemp > maxTemp;
 	}
 	
@@ -70,7 +70,7 @@ public class TwilightTalon extends CANTalon{
 	 * String output for printing to the SmartDashboard OR Console
 	 */
 	public String toString() {
-		double CurrTemp = this.getTemp(); //Returns Celsius
+		double CurrTemp = this.getTemperature(); //Returns Celsius
 		double CurrCurrent = this.getOutputCurrent(); //Returns Amperes
 		String text = "Current Temperature: " + CurrTemp + ", Current Current: " + CurrCurrent;
 		return text;
