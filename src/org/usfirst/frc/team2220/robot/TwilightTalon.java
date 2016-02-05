@@ -1,79 +1,71 @@
 package org.usfirst.frc.team2220.robot;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 public class TwilightTalon extends CANTalon{
-	private double maxTemp;
-	private double maxCurrent;
+	double MAXTEMP;
+	double MAXCURRENT;
+	final int Port;
 	
-	/**
-	 * Cast of CANTalon class
-	 * Checks maximum current and temperature, and stops motors if they exceed those
-	 * @param port CAN Port Number
-	 */
+	
 	public TwilightTalon(int port) {
 		super(port);
-		maxCurrent = 27.0;	//Normal Load Value
-		maxTemp = 5.0;	//Could not find temp value, currently placeholder
+		MAXCURRENT = 27.0;	//Normal Load Value
+		MAXTEMP = 5.0;	//Could not find temp value, currently placeholder
+		Port = port;
 	}
 	
-	public void setMaxCurrent(double newCurrent) {
-		maxCurrent = newCurrent;
+	void setMaxCurrent(double newCurrent) {
+		MAXCURRENT = newCurrent;
 	}
 	
-	public void setMaxTemp(double newTemp) {
-		maxTemp = newTemp;
+	void setMaxTemp(double newTemp) {
+		MAXTEMP = newTemp;
 	}
 	
-	/**
-	 * Tests whether Talon is within 'safe' levels
-	 * @return Whether the test was passed
-	 */
-	public boolean test() {
+	boolean test() {
 		boolean test = true;
-		if (isOverMaxCurrent()) 
-			test = false;
-		if (isOverMaxTemp())
-			test = false;
-		if(!test)
-			printWarning();
+		if (isOverMaxCurrent()) test = false;
+		if (isOverMaxTemp()) test = false;
+		if (!test) printWarning();
 		return test;
 	}
 	
-	public boolean isOverMaxCurrent() {
+	boolean isOverMaxCurrent() {
 		double CurrCurrent = this.getOutputCurrent(); //Returns Amperes
-		return CurrCurrent > maxCurrent;
+		if (CurrCurrent > MAXCURRENT) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public boolean isOverMaxTemp() {
+	boolean isOverMaxTemp() {
 		double CurrTemp = this.getTemperature(); //Returns Celsius
-		return CurrTemp > maxTemp;
+		if (CurrTemp > MAXTEMP) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	//@TODO test
-	public void stop() {
+	void stop() {
 		this.disableControl();
 	}
 	
-	/**
-	 * prints warning to the console, not the SmartDashboard
-	 */
-	public void printWarning () {	//Checks to see if thresholds are passed
+	void printWarning () {	//Checks to see if thresholds are passed
 		if (isOverMaxCurrent()) {
-			System.out.println("Currently over Maximum Current"); //insert method that prints to dashboard
+			SmartDashboard.putBoolean("Over Max Current: ",isOverMaxCurrent());
 		}
 		if (isOverMaxTemp()) {
-			System.out.println("Currently over Maximum Temperature"); //insert method that prints to dashboard
+			SmartDashboard.putBoolean("Over Max Temperature: ",isOverMaxTemp());
 		}
 	}
 	
-	/**
-	 * String output for printing to the SmartDashboard OR Console
-	 */
-	public String toString() {
+	void print() {	//Status report
 		double CurrTemp = this.getTemperature(); //Returns Celsius
 		double CurrCurrent = this.getOutputCurrent(); //Returns Amperes
-		String text = "Current Temperature: " + CurrTemp + ", Current Current: " + CurrCurrent;
-		return text;
+		SmartDashboard.putNumber("Current Current:",CurrCurrent);
+		SmartDashboard.putNumber("Current Temperature:",CurrTemp);
 	}
-	
 }
